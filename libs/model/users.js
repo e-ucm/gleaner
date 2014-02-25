@@ -1,8 +1,8 @@
 module.exports = (function() {
+    var util = require('util');
     var crypto = require('crypto');
     var salt = require('./configuration').salt;
     var Table = require('./table');
-    var util = require('util');
     var c = require('./constants/database');
     var mysql = require('../db/mysql');
     var errors = require('./constants/errors');
