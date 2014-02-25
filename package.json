@@ -1,0 +1,10 @@
+{
+    "author": "anserran <angelserranolaguna@gmail.com>",
+    "dependencies": {},
+    "description": "Game LEarning ANalytics for Eduactional Research",
+    "devDependencies": {},
+    "name": "gleaner",
+    "preferGlobal": "false",
+    "scripts": {},
+    "version": "0.0.1"
+}
