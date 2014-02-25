@@ -1,10 +1,18 @@
 {
     "author": "anserran <angelserranolaguna@gmail.com>",
-    "dependencies": {},
+    "dependencies": {
+        "q": "1.0.0",
+        "mysql": "2.1.0",
+        "crypto": "0.0.3"
+    },
     "description": "Game LEarning ANalytics for Eduactional Research",
-    "devDependencies": {},
+    "devDependencies": {
+        "nodeunit": ">0.0.0"
+    },
     "name": "gleaner",
     "preferGlobal": "false",
-    "scripts": {},
+    "scripts": {
+        "test": "nodeunit tests/"
+    },
     "version": "0.0.1"
 }
