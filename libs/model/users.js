@@ -1,15 +1,23 @@
 module.exports = (function() {
-    var Q = require('q');
     var crypto = require('crypto');
-    var mysql = require('../db/mysql');
-    var errors = require('./constants/errors');
-    var c = require('./constants/database');
     var salt = require('./configuration').salt;
+    var Table = require('./table');
+    var util = require('util');
+    var c = require('./constants/database');
+    var mysql = require('../db/mysql');
+
+
 
     var hash = function(password) {
         return crypto.createHash('md5').update(password + salt).digest(
             'hex');
     };
+
+    function Users() {
+        Table.call(this, c.USERS_TABLE, [c.USERS_NAME, c.USERS_PASSWORD, c.USERS_ROLE]);
+    }
+
+    util.inherits(Users, Table);
 
     /**
      * Adds a user
@@ -17,44 +25,22 @@ module.exports = (function() {
      * @param {String} password An unhashed password. It'll be hashed before added to database
      * @param {String} role     The role for new user
      */
-    var add = function(username, password, role) {
+    Users.prototype.add = function(username, password, role) {
         var hashedPassword = hash(password);
-        var columns = [c.USERS_NAME, c.USERS_PASSWORD, c.USERS_ROLE];
-
-        return mysql.query('INSERT INTO ?? ( ?? ) VALUES( ?, ?, ? )', [
-            [c.USERS_TABLE],
-            columns, username, hashedPassword, role
-        ]).then(function(result) {
-            return {
-                id: result.rows.insertId,
-                name: username,
-                role: role
-            };
-        }).fail(function(err) {
-            switch (err.code) {
-                // A user already exists with that user name
-                case 'ER_DUP_UNIQUE':
-                    throw new Error(errors.ER_DUPLICATE_USERNAME);
-                default:
-                    console.log('Unexpected error adding user: ' +
-                        err.code);
-                    throw new Error(errors.ER_UNKNOWN);
-            }
-        });
+        return Table.prototype.add.call(this, [username, hashedPassword,
+            role
+        ]);
     };
 
-    /**
-     * Removes the user
-     * @param  {number} id The user id
-     */
-    var remove = function(id) {
-        return mysql.query('DELETE FROM ' + c.USERS_TABLE + ' WHERE ' + c.ID +
-            '=?', id).then(function() {
-            return true;
-        }).fail(function(err) {
-            console.log('Unexpected error loging user: ' + err.code);
-            throw new Error(errors.ER_UNKNOWN);
-        });
+    /** @Override **/
+    Users.prototype.errorAdd = function(err) {
+        switch (err.code) {
+            // A user already exists with that user name
+            case 'ER_DUP_UNIQUE':
+                throw new Error(errors.ER_DUPLICATE_USERNAME);
+            default:
+                Table.prototype.errorAdd.call(this, err);
+        }
     };
 
     /**
@@ -63,7 +49,7 @@ module.exports = (function() {
      * @param  {String} password Password
      * @return {Object}          a string with the user role
      */
-    var login = function(username, password) {
+    Users.prototype.login = function(username, password) {
         var hashedPassword = hash(password);
         return mysql.query('SELECT ' + c.USERS_ROLE + ' FROM ' + c.USERS_TABLE +
             ' WHERE ' + c.USERS_NAME + '= ? AND ' + c.USERS_PASSWORD +
@@ -82,9 +68,5 @@ module.exports = (function() {
             });
     };
 
-    return {
-        add: add,
-        login: login,
-        remove: remove
-    };
+    return new Users();
 })();
