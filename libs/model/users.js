@@ -5,7 +5,7 @@ module.exports = (function() {
     var util = require('util');
     var c = require('./constants/database');
     var mysql = require('../db/mysql');
-
+    var errors = require('./constants/errors');
 
 
     var hash = function(password) {
@@ -37,7 +37,9 @@ module.exports = (function() {
         switch (err.code) {
             // A user already exists with that user name
             case 'ER_DUP_UNIQUE':
-                throw new Error(errors.ER_DUPLICATE_USERNAME);
+            case 'ER_DUP_ENTRY':
+                Table.prototype.throwError(errors.ER_DUPLICATE_USERNAME);
+                break;
             default:
                 Table.prototype.errorAdd.call(this, err);
         }
@@ -60,11 +62,11 @@ module.exports = (function() {
                 if (result.rows.length == 1) {
                     return result.rows[0][c.USERS_ROLE];
                 } else {
-                    throw new Error(errors.ER_INVALID_USERNAME_PASSWORD);
+                    Table.prototype.throwError(errors.ER_INVALID_USERNAME_PASSWORD);
                 }
-            }).fail(function(err) {
+            }, function(err) {
                 console.log('Unexpected error loging user: ' + err.code);
-                throw new Error(errors.ER_UNKNOWN);
+                Table.prototype.throwError(errors.ER_UNKNOWN);
             });
     };
 

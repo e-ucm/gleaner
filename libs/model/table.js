@@ -28,6 +28,8 @@ Table.prototype.add = function(values) {
                 that.filterAdd(objectInserted, column, values[i++]);
             });
             return objectInserted;
+        }).fail(function(err) {
+            return that.errorAdd(err);
         });
 };
 
@@ -38,7 +40,7 @@ Table.prototype.filterAdd = function(objectInserted, column, value) {
 Table.prototype.errorAdd = function(err) {
     console.log('Unexpected error adding user: ' +
         err.code);
-    throw new Error(errors.ER_UNKNOWN);
+    throwError(errors.ER_UNKNOWN);
 };
 
 Table.prototype.remove = function(id) {
@@ -47,9 +49,19 @@ Table.prototype.remove = function(id) {
         return true;
     }).fail(function(err) {
         console.log('Unexpected error loging user: ' + err.code);
-        throw new Error(errors.ER_UNKNOWN);
+        throwError(errors.ER_UNKNOWN);
     });
 };
+
+
+
+var throwError = function(code) {
+    var error = new Error();
+    error.code = code;
+    throw error;
+};
+
+Table.prototype.throwError = throwError;
 
 function buildInsert(count) {
     if (count === 0) {
