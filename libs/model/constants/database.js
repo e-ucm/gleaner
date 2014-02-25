@@ -1,6 +1,10 @@
 exports.ID = 'id';
-exports.USER_TABLE = 'users';
-exports.USER_NAME = 'name';
-exports.USER_PASSWORD = 'password';
-exports.USER_ROLE = 'role';
-exports.USER_ROLE_ADMIN = 'admin';
+// Users table
+exports.USERS_TABLE = 'users';
+exports.USERS_NAME = 'name';
+exports.USERS_PASSWORD = 'password';
+exports.USERS_ROLE = 'role';
+exports.USERS_ROLE_ADMIN = 'admin';
+// Games table
+exports.GAMES_TABLE = 'games';
+exports.GAMES_TITLE = 'title';

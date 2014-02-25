@@ -5,7 +5,7 @@ module.exports.install = function(user, password) {
             // Create admin user
             var users = require('../libs/model/users');
             var c = require('../libs/model/constants/database');
-            return users.add(user, password, c.USER_ROLE_ADMIN);
+            return users.add(user, password, c.USERS_ROLE_ADMIN);
         });
 };
 

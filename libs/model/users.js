@@ -19,10 +19,10 @@ module.exports = (function() {
      */
     var add = function(username, password, role) {
         var hashedPassword = hash(password);
-        var columns = [c.USER_NAME, c.USER_PASSWORD, c.USER_ROLE];
+        var columns = [c.USERS_NAME, c.USERS_PASSWORD, c.USERS_ROLE];
 
         return mysql.query('INSERT INTO ?? ( ?? ) VALUES( ?, ?, ? )', [
-            [c.USER_TABLE],
+            [c.USERS_TABLE],
             columns, username, hashedPassword, role
         ]).then(function(result) {
             return {
@@ -48,7 +48,7 @@ module.exports = (function() {
      * @param  {number} id The user id
      */
     var remove = function(id) {
-        return mysql.query('DELETE FROM ' + c.USER_TABLE + ' WHERE ' + c.ID +
+        return mysql.query('DELETE FROM ' + c.USERS_TABLE + ' WHERE ' + c.ID +
             '=?', id).then(function() {
             return true;
         }).fail(function(err) {
@@ -65,13 +65,14 @@ module.exports = (function() {
      */
     var login = function(username, password) {
         var hashedPassword = hash(password);
-        return mysql.query('SELECT ' + c.USER_ROLE + ' FROM ' + c.USER_TABLE +
-            ' WHERE ' + c.USER_NAME + '= ? AND ' + c.USER_PASSWORD + '= ?', [
+        return mysql.query('SELECT ' + c.USERS_ROLE + ' FROM ' + c.USERS_TABLE +
+            ' WHERE ' + c.USERS_NAME + '= ? AND ' + c.USERS_PASSWORD +
+            '= ?', [
                 username, hashedPassword
             ])
             .then(function(result) {
                 if (result.rows.length == 1) {
-                    return result.rows[0][c.USER_ROLE];
+                    return result.rows[0][c.USERS_ROLE];
                 } else {
                     throw new Error(errors.ER_INVALID_USERNAME_PASSWORD);
                 }

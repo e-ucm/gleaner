@@ -8,9 +8,10 @@ if (process.argv.length != 4) {
     var Q = require('q');
 
     var initialize = require('../libs/initializer')('config.json');
+    var uninstall = require('../installer/installer').uninstall();
     var install = require('../installer/installer').install(user, password);
 
-    Q.all([initialize, install])
+    Q.all([initialize, uninstall, install])
         .then(function() {
             console.log('Success!');
         }).fail(function(err) {
