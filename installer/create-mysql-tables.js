@@ -14,11 +14,19 @@ module.exports.install = function() {
     promises.push(mysql.query(usersSql));
 
     // Create games table
-    var gamesSql = 'CREATE TABLE IF NOT EXISTS ' + c.GAME;
+    var gamesSql = 'CREATE TABLE IF NOT EXISTS ' + c.GAMES_TABLE + '(' + c.ID +
+        ' INT PRIMARY KEY AUTO_INCREMENT, ' + c.GAMES_TITLE + ' VARCHAR(255))';
+
+    promises.push(mysql.query(gamesSql));
+
     return Q.all(promises);
 };
 
 module.exports.uninstall = function() {
-    var sql = 'DROP TABLE ' + c.USERS_TABLE;
-    return mysql.query(sql);
+    var promises = [];
+
+    promises.push(mysql.query('DROP TABLE ' + c.USERS_TABLE));
+    promises.push(mysql.query('DROP TABLE ' + c.GAMES_TABLE));
+
+    return Q.all(promises);
 };
