@@ -11,6 +11,23 @@ function Table(name, columns) {
     this.insert = buildInsert(columns.length);
 }
 
+Table.prototype.get = function(id) {
+    var that = this;
+    return mysql.query('SELECT * FROM ' + this.name + ' WHERE ' + c.ID + '=?', [
+        id
+    ]).then(function(result) {
+        if (result.rows.length === 0) {
+            throwError(errors.ER_ID_NOT_FOUND);
+        } else {
+            return that.filterGet(result.rows[0]);
+        }
+    });
+};
+
+Table.prototype.filterGet = function(object) {
+    return object;
+};
+
 Table.prototype.add = function(values) {
     var that = this;
     var queryValues = [this.columns];
@@ -38,8 +55,8 @@ Table.prototype.filterAdd = function(objectInserted, column, value) {
 };
 
 Table.prototype.errorAdd = function(err) {
-    console.log('Unexpected error adding user: ' +
-        err.code);
+    console.log('Unexpected error adding to ' + this.name + ': ' +
+        err.code + ':' + err.message);
     throwError(errors.ER_UNKNOWN);
 };
 
@@ -47,16 +64,16 @@ Table.prototype.remove = function(id) {
     return mysql.query('DELETE FROM ' + this.name + ' WHERE ' + c.ID +
         '=?', id).then(function() {
         return true;
-    }).fail(function(err) {
-        console.log('Unexpected error loging user: ' + err.code);
-        throwError(errors.ER_UNKNOWN);
-    });
+    }).fail(throwUnknownError);
 };
 
-
+var throwUnknownError = function(err) {
+    console.log('Unexpected error ' + err.code + ': ' + err.message);
+    throwError(errors.ER_UNKNOWN);
+};
 
 var throwError = function(code) {
-    var error = new Error();
+    var error = new Error(code);
     error.code = code;
     throw error;
 };
