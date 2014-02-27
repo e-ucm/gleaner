@@ -24,6 +24,20 @@ Table.prototype.get = function(id) {
     });
 };
 
+Table.prototype.selectWhere = function(where) {
+    var w = buildWhere(where);
+    return mysql.query('SELECT * FROM ' + this.name + ' WHERE ' + w.whereClause,
+        w.values);
+};
+
+Table.prototype.removeWhere = function(where) {
+    var w = buildWhere(where);
+    return mysql.query('DELETE FROM ' + this.name + ' WHERE ' + w.whereClause,
+        w.values).then(function() {
+        return true;
+    }).fail(throwUnknownError);
+};
+
 Table.prototype.filterGet = function(object) {
     return object;
 };
@@ -89,4 +103,17 @@ function buildInsert(count) {
         result += ', ?';
     }
     return result;
+}
+
+function buildWhere(where) {
+    var whereClause = '';
+    var values = [];
+    for (var key in where) {
+        whereClause += (values.length === 0 ? '' : ' AND ') + key + '= ? ';
+        values.push(where[key]);
+    }
+    return {
+        whereClause: whereClause,
+        values: values
+    };
 }

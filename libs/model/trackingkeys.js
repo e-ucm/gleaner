@@ -12,18 +12,7 @@ module.exports = (function() {
     util.inherits(TrackingKeys, Table);
 
     TrackingKeys.prototype.add = function(gameId, key) {
-        var that = this;
-        return games.get(gameId).then(function() {
-            return Table.prototype.add.call(that, [gameId, key]);
-        }, function(err) {
-            switch (err.code) {
-                // Game does not exist
-                case errors.ER_ID_NOT_FOUND:
-                    throw err;
-                default:
-                    Table.prototype.errorAdd.call(this, err);
-            }
-        });
+        return Table.prototype.add.call(this, [gameId, key]);
     };
 
     /** @Override **/

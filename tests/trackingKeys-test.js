@@ -31,18 +31,6 @@ exports.testAddKey = function(test) {
         });
 };
 
-exports.testAddKeyToUnexistingGame = function(test) {
-    test.expect(1);
-    trackingkeys.add(9000, '000')
-        .then(function() {
-            test.ok(false, 'Should not be added');
-        }).fail(function(err) {
-            test.equals(err.code, 'ER_ID_NOT_FOUND');
-        }).then(function() {
-            test.done();
-        });
-};
-
 exports.testAddDuplicatedKey = function(test) {
     games.add('ñor')
         .then(function(game) {
