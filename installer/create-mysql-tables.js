@@ -26,6 +26,13 @@ module.exports.install = function() {
 
     promises.push(mysql.query(trackingKeysSql));
 
+    // Create players table
+    var playersSql = 'CREATE TABLE IF NOT EXISTS ' + c.PLAYERS_TABLE + '(' + c.ID +
+        ' INT PRIMARY KEY AUTO_INCREMENT, ' + c.PLAYERS_TYPE_NAME +
+        ' VARCHAR(255) UNIQUE, ' + c.PLAYERS_TYPE + ' VARCHAR(15) )';
+
+    promises.push(mysql.query(playersSql));
+
     return Q.all(promises);
 };
 
@@ -35,6 +42,7 @@ module.exports.uninstall = function() {
     promises.push(mysql.query('DROP TABLE ' + c.USERS_TABLE));
     promises.push(mysql.query('DROP TABLE ' + c.GAMES_TABLE));
     promises.push(mysql.query('DROP TABLE ' + c.TRACKING_KEYS_TABLE));
+    promises.push(mysql.query('DROP TABLE ' + c.PLAYERS_TABLE));
 
     return Q.all(promises);
 };

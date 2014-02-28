@@ -12,3 +12,10 @@ exports.GAMES_TITLE = 'title';
 exports.TRACKING_KEYS_TABLE = 'trackingKeys';
 exports.TRACKING_KEYS_GAME = 'game';
 exports.TRACKING_KEYS_KEY = 'trackingKey';
+// Players table
+exports.PLAYERS_TABLE = 'players';
+exports.PLAYERS_NAME = 'name';
+exports.PLAYERS_TYPE = 'type';
+
+exports.PLAYERS_TYPE_ANONYMOUS = 'anonymous';
+exports.PLAYERS_TYPE_CODE = 'code';
