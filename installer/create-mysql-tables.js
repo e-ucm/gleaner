@@ -29,9 +29,19 @@ module.exports.install = function() {
     // Create players table
     var playersSql = 'CREATE TABLE IF NOT EXISTS ' + c.PLAYERS_TABLE + '(' + c.ID +
         ' INT PRIMARY KEY AUTO_INCREMENT, ' + c.PLAYERS_TYPE_NAME +
-        ' VARCHAR(255) UNIQUE, ' + c.PLAYERS_TYPE + ' VARCHAR(15) )';
+        ' VARCHAR(255) UNIQUE, ' + c.PLAYERS_TYPE + ' VARCHAR(16) )';
 
     promises.push(mysql.query(playersSql));
+
+    // Create gameplays table
+    var gameplaysSql = 'CREATE TABLE IF NOT EXISTS ' + c.GAMEPLAYS_TABLE + '(' +
+        c.ID + ' INT PRIMARY KEY AUTO_INCREMENT, ' + c.GAMEPLAYS_PLAYER +
+        ' INT, ' + c.GAMEPLAYS_TRACKING_KEY +
+        ' VARCHAR(255) UNIQUE, ' + c.GAMEPLAYS_TOKEN + ' VARCHAR(255) UNIQUE, ' +
+        c.GAMEPLAYS_IP + ' VARCHAR(64), ' + c.GAMEPLAYS_START + ' DATETIME, ' +
+        c.GAMEPLAYS_LAST_UPDATE + ' DATETIME)';
+
+    promises.push(mysql.query(gameplaysSql));
 
     return Q.all(promises);
 };
@@ -43,6 +53,7 @@ module.exports.uninstall = function() {
     promises.push(mysql.query('DROP TABLE ' + c.GAMES_TABLE));
     promises.push(mysql.query('DROP TABLE ' + c.TRACKING_KEYS_TABLE));
     promises.push(mysql.query('DROP TABLE ' + c.PLAYERS_TABLE));
+    promises.push(mysql.query('DROP TABLE ' + c.GAMEPLAYS_TABLE));
 
     return Q.all(promises);
 };

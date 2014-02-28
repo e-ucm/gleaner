@@ -26,14 +26,26 @@ Table.prototype.get = function(id) {
 
 Table.prototype.selectWhere = function(where) {
     var w = buildWhere(where);
-    return mysql.query('SELECT * FROM ' + this.name + ' WHERE ' + w.whereClause,
+    return mysql.query('SELECT * FROM ' + this.name + ' WHERE ' + w.clause,
         w.values);
 };
 
 Table.prototype.removeWhere = function(where) {
     var w = buildWhere(where);
-    return mysql.query('DELETE FROM ' + this.name + ' WHERE ' + w.whereClause,
+    return mysql.query('DELETE FROM ' + this.name + ' WHERE ' + w.clause,
         w.values).then(function() {
+        return true;
+    }).fail(throwUnknownError);
+};
+
+Table.prototype.updateWhere = function(update, where) {
+    var s = buildSet(update);
+    var w = buildWhere(where);
+    w.values.forEach(function(value) {
+        s.values.push(value);
+    });
+    return mysql.query('UPDATE ' + this.name + ' SET ' + s.clause + ' WHERE ' +
+        w.clause, s.values).then(function() {
         return true;
     }).fail(throwUnknownError);
 };
@@ -106,14 +118,23 @@ function buildInsert(count) {
 }
 
 function buildWhere(where) {
-    var whereClause = '';
+    return buildColumnsList(where, 'AND');
+}
+
+function buildSet(set) {
+    return buildColumnsList(set, ', ');
+}
+
+function buildColumnsList(columns, separator) {
+    var clause = '';
     var values = [];
-    for (var key in where) {
-        whereClause += (values.length === 0 ? '' : ' AND ') + key + '= ? ';
-        values.push(where[key]);
+    for (var key in columns) {
+        clause += (values.length === 0 ? '' : ' ' + separator + ' ') + key +
+            '= ? ';
+        values.push(columns[key]);
     }
     return {
-        whereClause: whereClause,
+        clause: clause,
         values: values
     };
 }
