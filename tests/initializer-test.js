@@ -1,4 +1,5 @@
 var mysql = require('../libs/db/mysql');
+var mongodb = require('../libs/db/mongodb');
 
 exports.test = function(test) {
     console.log('Testing initializer...');
@@ -10,6 +11,8 @@ exports.test = function(test) {
             test.ok(false, err.stack);
         }).then(function() {
             mysql.end();
+            return mongodb.end();
+        }).then(function() {
             test.done();
         });
 };

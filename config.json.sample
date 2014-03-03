@@ -1,6 +1,11 @@
 {
+    "salt": "sometestsalt"
     "mysqlHost": "localhost",
     "mysqlUser": "user",
     "mysqlPassword": "password",
-    "mysqlPort": 3306
+    "mysqlPort": 3306,
+    "mysqlDatabase": "gleaner",
+    "mongoHost": "localhost",
+    "mongoPort": 27018,
+    "mongoDatabase": "gleaner"
 }

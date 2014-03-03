@@ -8,6 +8,7 @@ exports.tearDown = function(callback) {
     console.log('Uninstalling...');
     require('../installer/installer').uninstall().then(function() {
         require('../libs/db/mysql').end();
+        return require('../libs/db/mongodb').end();
     }).fail(function(err) {
         console.log(err.stack);
     }).then(function() {
