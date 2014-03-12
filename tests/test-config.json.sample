@@ -4,5 +4,8 @@
     "mysqlPassword": "password",
     "mysqlPort": 3306,
     "mysqlDatabase": "gleanertest",
-    "salt": "yoursaltplease"
+    "salt": "yoursaltplease",
+    "mongoHost": "localhost",
+    "mongoPort": 27018,
+    "mongoDatabase": "gleanertest"
 }

@@ -32,6 +32,18 @@ module.exports = (function() {
         return deferred.promise;
     };
 
+    var dropDatabase = function() {
+        var deferred = Q.defer();
+        db.dropDatabase(function(err, done) {
+            if (err) {
+                deferred.reject(err);
+            } else {
+                deferred.resolve(done);
+            }
+        });
+        return deferred.promise;
+    }
+
     var collection = function(name) {
         return new Collection(name);
     };
@@ -84,9 +96,10 @@ module.exports = (function() {
         return deferred.promise;
     };
 
-    Collection.prototype.find = function(query, projection, options) {
+    Collection.prototype.find = function(query, options) {
         var deferred = Q.defer();
         var cursor = this.collection.find(query || {});
+        options = options || {};
         cursor = options.sort ? cursor.sort(options.sort) : cursor;
         cursor = options.limit ? cursor.limit(options.limit) : cursor;
         cursor = options.skip ? cursor.skip(options.skip) : cursor;
@@ -145,6 +158,7 @@ module.exports = (function() {
     return {
         setUp: setUp,
         end: end,
-        collection: collection
+        collection: collection,
+        dropDatabase: dropDatabase
     };
 })();

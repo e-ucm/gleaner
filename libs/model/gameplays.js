@@ -19,7 +19,7 @@ module.exports = (function() {
      * Adds a game
      * @param {string} title The title of the game
      */
-    Gameplays.prototype.add = function(player, trackingkey, token, ip) {
+    Gameplays.prototype.add = function(player, trackingkey, ip, token) {
         var nowDate = now();
         return Table.prototype.add.call(this, [player, trackingkey, token,
             ip, nowDate, nowDate

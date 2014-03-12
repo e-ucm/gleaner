@@ -28,7 +28,7 @@ module.exports.install = function() {
 
     // Create players table
     var playersSql = 'CREATE TABLE IF NOT EXISTS ' + c.PLAYERS_TABLE + '(' + c.ID +
-        ' INT PRIMARY KEY AUTO_INCREMENT, ' + c.PLAYERS_TYPE_NAME +
+        ' INT PRIMARY KEY AUTO_INCREMENT, ' + c.PLAYERS_NAME +
         ' VARCHAR(255) UNIQUE, ' + c.PLAYERS_TYPE + ' VARCHAR(16) )';
 
     promises.push(mysql.query(playersSql));

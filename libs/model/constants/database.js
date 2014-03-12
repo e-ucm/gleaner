@@ -27,3 +27,7 @@ exports.GAMEPLAYS_TOKEN = 'token';
 exports.GAMEPLAYS_IP = 'ip';
 exports.GAMEPLAYS_START = 'start';
 exports.GAMEPLAYS_LAST_UPDATE = 'lastUpdate';
+
+// Traces collections
+exports.TRACES = 'traces';
+exports.TRACES_GAMEPLAY = 'gameplay';

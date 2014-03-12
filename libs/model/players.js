@@ -15,7 +15,7 @@ module.exports = (function() {
      * @param {String} type Type of player
      */
     Players.prototype.add = function(name, type) {
-        return Table.prototype.add.call(this, [title]);
+        return Table.prototype.add.call(this, [name, type]);
     };
 
     return new Players();

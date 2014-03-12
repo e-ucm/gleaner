@@ -11,5 +11,9 @@ module.exports.install = function(user, password) {
 
 module.exports.uninstall = function() {
     // Drop MySQL tables
-    return require('./create-mysql-tables').uninstall();
+    return require('./create-mysql-tables').uninstall()
+        .then(function() {
+            // Drop MongoDB database
+            return require('../libs/db/mongodb').dropDatabase();
+        });
 };
