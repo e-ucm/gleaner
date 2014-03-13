@@ -37,3 +37,6 @@ if (app.get('env') === 'production') {
 
 app.get('/api/c/start/:trackingKey', api.tracker.start);
 app.post('/api/c/track', api.tracker.track);
+
+// Traces
+app.get('/api/traces/:trackingKey', api.traces.get);

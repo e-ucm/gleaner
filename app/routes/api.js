@@ -1,5 +1,6 @@
 var trackercontroller = require('../../libs/controllers/trackercontroller');
 var errors = require('../../libs/model/constants/errors');
+var traces = require('../../libs/model/traces');
 
 
 /** API for tracker **/
@@ -53,6 +54,26 @@ exports.tracker = {
                             break;
                     }
                 });
+        } else {
+            res.send(400);
+        }
+    }
+};
+
+exports.traces = {
+    get: function(req, res) {
+        var trackingKey = req.params.trackingKey;
+        if (trackingKey) {
+            traces.find(trackingKey)
+                .then(function(traces) {
+                    res.status(200);
+                    res.send(traces);
+                }).fail(function(err) {
+                    console.log('Unexpected error:' + err.stack);
+                    res.send(500);
+                });
+        } else {
+            res.send(400);
         }
     }
 };
