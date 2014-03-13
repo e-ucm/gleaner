@@ -4,6 +4,7 @@ module.exports = (function() {
     var gameplays = require('../model/gameplays');
     var traces = require('../model/traces');
     var c = require('../model/constants/database');
+    var errors = require('../model/constants/errors');
     var salt = require('../model/configuration').salt;
     var crypto = require('crypto');
 
@@ -43,13 +44,14 @@ module.exports = (function() {
             });
     };
 
+    /** Add traces to the database; @return if the traces were added **/
     var track = function(authToken, tracesData) {
         // Assure is a valid auth token
         var where = {};
         where[c.GAMEPLAYS_TOKEN] = authToken;
         return gameplays.selectWhere(where).then(function(result) {
             if (result.rows.length !== 1) {
-                return false;
+                errors.throwError(errors.ER_INVALID_TRACK_TOKEN);
             } else {
                 // Update the game play
                 var gameplay = result.rows[0];
@@ -59,9 +61,6 @@ module.exports = (function() {
                         return traces.add(gameplay[c.GAMEPLAYS_TRACKING_KEY], gameplay[c.ID], tracesData);
                     });
             }
-        }).fail(function(err) {
-            console.log('Unexpected error adding traces: ' + err.stack);
-            return false;
         });
     };
 

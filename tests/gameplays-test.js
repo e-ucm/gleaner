@@ -13,7 +13,7 @@ exports.testAddUpdate = function(test) {
     var id;
     var date;
     test.expect(7);
-    gameplays.add(0, '000', 'sf=', 'localhost')
+    gameplays.add(0, '000', 'localhost', 'sf=')
         .then(function(gameplay) {
             test.ok(gameplay.id);
             id = gameplay.id;

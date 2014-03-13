@@ -2,6 +2,7 @@ var gamecontroller = require('../libs/controllers/gamecontroller');
 var trackercontroller = require('../libs/controllers/trackercontroller');
 var test = require('../test');
 var c = require('../libs/model/constants/database');
+var errors = require('../libs/model/constants/errors');
 var gameplays = require('../libs/model/gameplays');
 var players = require('../libs/model/players');
 var traces = require('../libs/model/traces');
@@ -123,6 +124,25 @@ exports.testTrack = function(test) {
             });
         }).fail(function(err) {
             test.ok(false, err.stack);
+        }).then(function() {
+            test.done();
+        });
+};
+
+exports.testTrackInvalid = function(test) {
+    var trackingKey = '000';
+    var code = '4444';
+    var ip = '127.0.0.1';
+    var tracesData = 'ñor';
+
+    test.expect(1);
+    trackercontroller.start(code, trackingKey, ip)
+        .then(function(authtoken) {
+            return trackercontroller.track(authtoken, tracesData);
+        }).then(function(result) {
+            test.ok(false, 'Traces were added, in they should not');
+        }).fail(function(err) {
+            test.ok(err.code, errors.ER_INVALID_TRACE_FORMAT);
         }).then(function() {
             test.done();
         });
