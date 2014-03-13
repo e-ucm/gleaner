@@ -4,15 +4,19 @@
         "q": "1.0.0",
         "mysql": "2.1.0",
         "crypto": "0.0.3",
-        "mongodb": "1.3.23"
+        "mongodb": "1.3.23",
+        "express": "~3.2.6",
+        "jade": "~0.31.2"
     },
     "description": "Game LEarning ANalytics for Eduactional Research",
     "devDependencies": {
-        "nodeunit": ">0.0.0"
+        "nodeunit": ">0.0.0",
+        "supertest": "0.9.0"
     },
     "name": "gleaner",
     "preferGlobal": "false",
     "scripts": {
+        "start": "node bin/gleaner",
         "test": "nodeunit tests/"
     },
     "version": "0.0.1"
