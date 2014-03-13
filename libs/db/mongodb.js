@@ -33,15 +33,21 @@ module.exports = (function() {
     };
 
     var dropDatabase = function() {
-        var deferred = Q.defer();
-        db.dropDatabase(function(err, done) {
-            if (err) {
-                deferred.reject(err);
-            } else {
-                deferred.resolve(done);
-            }
-        });
-        return deferred.promise;
+        if (db) {
+            var deferred = Q.defer();
+            db.dropDatabase(function(err, done) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve(done);
+                }
+            });
+            return deferred.promise;
+        } else {
+            return Q.fcall(function() {
+                return true;
+            });
+        }
     }
 
     var collection = function(name) {

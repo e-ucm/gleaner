@@ -13,10 +13,14 @@ if (process.argv.length != 4) {
 
     Q.all([initialize, uninstall, install])
         .then(function() {
-            console.log('Success!');
+            console.log('User added.');
         }).fail(function(err) {
             console.log('Something went wrong!', err.stack);
         }).then(function() {
+            console.log('Finishing connections...');
             require('../libs/db/mysql').end();
+            return require('../libs/db/mongodb').end();
+        }).then(function() {
+            console.log('Success!');
         });
 }

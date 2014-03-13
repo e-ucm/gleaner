@@ -1,6 +1,7 @@
 var trackercontroller = require('../../libs/controllers/trackercontroller');
 var errors = require('../../libs/model/constants/errors');
 var traces = require('../../libs/model/traces');
+var users = require('../../libs/model/users');
 
 
 /** API for tracker **/
@@ -75,5 +76,30 @@ exports.traces = {
         } else {
             res.send(400);
         }
+    }
+};
+
+exports.login = function(req, res) {
+    var user = req.body.user;
+    var password = req.body.password;
+    if (user && password) {
+        users.login(user, password)
+            .then(function(role) {
+                req.session.role = role;
+                req.session.user = user;
+                res.redirect('/');
+            }).fail(function(err) {
+                switch (err.code) {
+                    case errors.ER_INVALID_USERNAME_PASSWORD:
+                        res.send(401);
+                        break;
+                    default:
+                        console.log('Unexpected error: ' + err.stack);
+                        res.send(500);
+                        break;
+                }
+            });
+    } else {
+        res.send(401);
     }
 };
