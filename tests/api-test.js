@@ -1,14 +1,16 @@
 var request = require('supertest');
-var app = require('../app/app');
+var app;
 var test = require('../test');
 var gamecontroller = require('../libs/controllers/gamecontroller');
 var trackingKey = '000';
 
 exports.setUp = function(callback) {
     test.setUp(function() {
+        app = require('../app/app');
         gamecontroller.addGame('Test')
             .then(function(game) {
-                return gamecontroller.addTrackingKey(game.id, trackingKey)
+                return gamecontroller.addTrackingKey(game.id,
+                    trackingKey)
                     .then(function() {
                         callback();
                     }).fail(function(err) {

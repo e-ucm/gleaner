@@ -39,20 +39,24 @@ if (app.get('env') === 'production') {
 
 }
 
+
 app.get('/api/c/start/:trackingKey', api.tracker.start);
 app.post('/api/c/track', api.tracker.track);
 
 app.get('/login', routes.login);
 app.post('/login', api.login);
 
-// Only tracking urls can be accessed without authentication
-app.all('*', function(req, res, next) {
-    if (req.session.role) {
-        next();
-    } else {
-        res.redirect('/login');
-    }
-});
+// Add authentication only if not testing
+if (app.get('env') !== 'test') {
+    // Only tracking urls can be accessed without authentication
+    app.all('*', function(req, res, next) {
+        if (req.session.role) {
+            next();
+        } else {
+            res.redirect('/login');
+        }
+    });
+}
 
 // Traces
 app.get('/api/traces/:trackingKey', api.traces.get);

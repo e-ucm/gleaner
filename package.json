@@ -17,7 +17,7 @@
     "preferGlobal": "false",
     "scripts": {
         "start": "node bin/gleaner",
-        "test": "nodeunit tests/"
+        "test": "NODE_ENV=test nodeunit tests/"
     },
     "version": "0.0.1"
 }
