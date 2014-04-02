@@ -1,6 +1,6 @@
 {
-    "sessionSalt": "somestalforsessions",
-    "salt": "sometestsalt"
+    "sessionSalt": "somesaltforsessions",
+    "salt": "sometestsalt",
     "mysqlHost": "localhost",
     "mysqlUser": "user",
     "mysqlPassword": "password",
