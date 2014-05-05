@@ -184,8 +184,14 @@
     data: { value: 2500 } // Player 'score' value is updated to 2500
 }
 </pre>
-<h3><a name="welcome-to-github-pages" class="anchor" href="#gleaner"><span class="octicon octicon-link"></span></a>Gleaner client</h3>
-<p>You can find some pre-made Java libraries to connect with gleaner from the client in <a href="https://github.com/anserran/gleaner-tracker">https://github.com/anserran/gleaner-tracker</a></p>
+<h3><a name="welcome-to-github-pages" class="anchor" href="#gleaner"><span class="octicon octicon-link"></span></a>Using the Gleaner client</h3>
+<p>You can find some pre-made Java libraries to connect with gleaner from the client in <a href="https://github.com/anserran/gleaner-tracker">https://github.com/anserran/gleaner-tracker</a>. The main class you want to look is <a href="https://github.com/e-ucm/gleaner-tracker/blob/master/core/gleaner-tracker/src/main/java/es/eucm/gleaner/tracker/Tracker.java">Tracker</a> (and its platform dependent implementations <a href="https://github.com/e-ucm/gleaner-tracker/blob/master/core/gleaner-tracker-java/src/main/java/es/eucm/gleaner/tracker/JerseyTracker.java">JerseyTracker</a> and <a href="https://github.com/e-ucm/gleaner-tracker/blob/master/core/gleaner-tracker-gwt/src/main/java/es/eucm/gleaner/tracker/GwtTracker.java">GwtTracker</a>). These classes:</p>
+<ul>
+<li>Can start the communication with the server only from the URL and the game token</li>
+<li>Contain a queue with the traces, that is automatically managed</li>
+<li>Handle possible connection errors with the server</li>
+<li>Contains many convenient methods to generate common traces</li>
+</ul>
           </section>
           <aside id="sidebar">
             <a href="https://github.com/e-ucm/gleaner/zipball/master" class="button">
