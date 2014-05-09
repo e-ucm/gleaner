@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>GLEANER - Technical Documentation</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Gleaner - Tech</h1>
+        <h2></h2>
+        <a href="https://github.com/e-ucm/gleaner" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>Technical documentation</h2>
+
+          <h3><a name="welcome-to-github-pages" class="anchor" href="#gleaner"><span class="octicon octicon-link"></span></a>Installing GLEANER on Ubuntu</h3>
+          <h4>Software requirements</h4>
+          <p>GLEANER has been mainly tested in Ubuntu machines (both Server and Deskto distributions). To properly run GLEANER, the following software must be installed in the machine</p>
+          <ul>
+            <li><a href="https://github.com/joyent/node">Node.js (recommended version 0.10.26)</a></li>
+            <li><a href="https://www.mongodb.org/">MongoDB</a></li>
+            <li><a href="http://www.mysql.com/">MySQL Server</a></li>
+          </ul>
+          <h4>Downloading the code</h4>
+          <p>You can download a .zip or .tar.gz distribution from the right sidebar, or you can download the code directly from the Github repository:</p>
+          <pre>
+            mkdir repositories
+            git clone https://github.com/e-ucm/gleaner.git
+            cd gleaner
+            npm install
+          </pre>
+          <h4>Configuring GLENAER</h4>
+          <p>For GLEANER to properly run, you need to create <em>config.json</em> file in the root. You have a <a href="https://github.com/e-ucm/gleaner/blob/master/config.json.sample" target="_blank">config.json.sample</a> showing the properties you need to set:
+          <pre>
+            {
+              "sessionSalt": "somestalforsessions", // Salt for sessions
+              "salt": "somesalt" // Salt for password hashing
+              "mysqlHost": "localhost", // MySQL host
+              "mysqlUser": "user", // User to access MySQL
+              "mysqlPassword": "password", // Password for MySQL user
+              "mysqlPort": 3306, // MySQL port
+              "mysqlDatabase": "gleaner", // MySQL database name
+              "mongoHost": "localhost", // MongoDB host
+              "mongoPort": 27018, // MongoDB port
+              "mongoDatabase": "gleaner" // MongoDB database name
+            }
+          </pre>
+          <h4>Creating admin user</h4>
+          <p>Once the configuration file is ready, you need to create an admin user to access GLEANER dashboard. You can do that executing, in the gleaner source root:</p>
+          <pre>
+            node bin/install adminUserName adminUserPassword
+          </pre>
+          <p>substituting <em>adminUserName</em> and <em>adminUserPassword</em> for whichever values you want.</p>
+          <h4>Starting GLEANER server</h4>
+          <p>To start GLENAER in port 80, run in the gleaner source root:</p>
+          <pre>
+            npm start
+          </pre>
+          <h3><a name="welcome-to-github-pages" class="anchor" href="#gleaner"><span class="octicon octicon-link"></span></a>The API</h3>
+          <p>GLEANER has two main components: the <strong>collector</strong>, to receive traces from educational videogames and resources, and the <strong>analyzer</strong>, to deal with analysis and reporting of the collected data.</p>
+          <h4>Collector API</h4>
+          <p>Collector API receives games traces and stores them in the gleaner database, and it listens in <em>http://gleanerhost/api/c/</em></p>
+          <h5>Start tracking</h3>
+          <p>To send traces to the collector, the client must first ask permission to the server sending the following request:</p>
+          <pre>GET start/:gamekey</pre>
+          <p>where gamekey is a unique identifier, known by GLEANER, representing the game to track. The collector checks request credentials and if they are valid returns an http code 20X with an authorization object:</p>
+          <pre>{ token: 'some_auth_token' }</pre>
+          <h5>Sending traces</h3>
+          <p>Clients sends traces to:</p>
+          <pre>POST track</pre>
+          <p>The request must set its authorization header with the value returned in <em>token</em>.</p>
+          <p>The message body must contain a list of json objects. Each of this object represents a trace, and must follow the following structure:</p>
+<pre>
+{
+    type: 'trace_type',
+    timeStamp: some_timestamp, // A timestamp with the moment this trace was generated
+    ...
+    Other values
+}
+</pre>
+<p>20X is returned if the list of traces is added, 400 if the format is incorrect or 401 if user hasn't got permission.</p>
+<p>Traces can contain as many fields as desired. However, many of the built-in tools in gleaner use two types of traces, input, representing direct interactions of players with input devices (as mouses, keyboards, controllers...) and logic, representing logic events in the game. They follow the next structure:</p>
+<pre>
+{
+    type: 'input',
+    timeStamp: some_timestamp,
+    device: 'some_device', // Predefined values: 'mouse', 'keyboard', 'screen'
+    action: 'some_action', // Predefined values: 'move', 'press', 'release', 'click', 'drag'
+    target: 'target_id' // An identifier of the in-game element that processed the input event, if any
+    data: { key1: value, key2: value2, ...} // To pass additional arguments. A 'mouse' input would contain a x and y coordinates and the button
+}
+</pre>
+<pre>
+{
+    type: 'logic',
+    timeStamp: some_timestamp,
+    event: 'some_event', // Predefined values: 'game_start', 'game_end', 'game_quit', 'phase_start', 'phase_end', 'var_update'
+    target: 'some_id', // See examples below to understand this fields
+    data: { key1: value, key2: value2, ...}
+}
+</pre>
+<p><strong>Examples:</strong></p>
+<pre>
+{
+    type: 'input',
+    timeStamp: new Date(),
+    device: 'mouse',
+    action: 'press',
+    data: { button: 0, x: 250, y: 600 }, // Pressed button 0 in coordinates (250, 600)
+    target: null
+}
+</pre>
+<pre>
+{
+    type: 'input',
+    timeStamp: new Date(),
+    device: 'keyboard',
+    action: 'click' // Typed
+    data: { keycode: 'a' }, // 'a' was the character typed
+    target: 'spaceship' // The game entity with id 'spaceship' processed this input
+}
+</pre>
+<pre>
+{
+    type: 'logic',
+    timeStamp: new Date(),
+    event: 'game_start' // The first trace to be sent
+}
+</pre>
+<pre>
+{
+    type: 'logic',
+    timeStamp: new Date(),
+    event: 'game_quit' // Player quits the game before finishing it
+}
+</pre>
+<pre>
+{
+    type: 'logic',
+    timeStamp: new Date(),
+    event: 'game_end' // Player finishes the game
+}
+</pre>
+<pre>
+{
+    type: 'logic',
+    timeStamp: new Date(),
+    event: 'phase_start',
+    target: 'phase 1' // Player enters 'phase 1' in the game
+}
+</pre>
+<pre>
+{
+    type: 'logic',
+    timeStamp: new Date(),
+    event: 'phase_end',
+    target: 'final boss' // Player finishes the phase 'final boss'
+}
+</pre>
+<pre>
+{
+    type: 'logic',
+    timeStamp: new Date(),
+    event: 'var_update',
+    target: 'score',
+    data: { value: 2500 } // Player 'score' value is updated to 2500
+}
+</pre>
+<h3><a name="welcome-to-github-pages" class="anchor" href="#gleaner"><span class="octicon octicon-link"></span></a>Using the Gleaner client</h3>
+<p>You can find some pre-made Java libraries to connect with gleaner from the client in <a href="https://github.com/anserran/gleaner-tracker">https://github.com/anserran/gleaner-tracker</a>. The main class you want to look is <a href="https://github.com/e-ucm/gleaner-tracker/blob/master/core/gleaner-tracker/src/main/java/es/eucm/gleaner/tracker/Tracker.java">Tracker</a> (and its platform dependent implementations <a href="https://github.com/e-ucm/gleaner-tracker/blob/master/core/gleaner-tracker-java/src/main/java/es/eucm/gleaner/tracker/JerseyTracker.java">JerseyTracker</a> and <a href="https://github.com/e-ucm/gleaner-tracker/blob/master/core/gleaner-tracker-gwt/src/main/java/es/eucm/gleaner/tracker/GwtTracker.java">GwtTracker</a>). These classes:</p>
+<ul>
+<li>Can start the communication with the server only from the URL and the game token</li>
+<li>Contain a queue with the traces, that is automatically managed</li>
+<li>Handle possible connection errors with the server</li>
+<li>Contains many convenient methods to generate common traces</li>
+</ul>
+          </section>
+          <aside id="sidebar">
+            <a href="https://github.com/e-ucm/gleaner/zipball/master" class="button">
+              <small>Download</small>
+              .zip file
+            </a>
+            <a href="https://github.com/e-ucm/gleaner/tarball/master" class="button">
+              <small>Download</small>
+              .tar.gz file
+            </a>
+
+            <p class="repo-owner"><a href="https://github.com/e-ucm/gleaner">GLEANER</a> is maintained by <a href="http://www.e-ucm.es">e-ucm</a>.</p>
+          </aside>
+        </div>
+      </div>
+
+      <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+      <script type="text/javascript">
+      try {
+        var pageTracker = _gat._getTracker("UA-49058646-1");
+        pageTracker._trackPageview();
+      } catch(err) {}
+      </script>
+
+    </body>
+    </html>
