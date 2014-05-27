@@ -71,3 +71,18 @@ exports.testAddKeyToUnexistingGame = function(test) {
             test.done();
         });
 };
+
+exports.testGet = function(test) {
+    test.expect(1);
+    gameController.addGame({}).then(function(game) {
+        console.log('Game added ' + JSON.stringify(game));
+        return gameController.get()
+            .then(function(games) {
+                test.ok(games.length);
+            }).fail(function(err) {
+                test.ok(false, err.stack);
+            }).then(function() {
+                test.done();
+            });
+    });
+};

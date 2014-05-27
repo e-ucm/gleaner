@@ -25,9 +25,13 @@ Table.prototype.get = function(id) {
 };
 
 Table.prototype.selectWhere = function(where) {
-    var w = buildWhere(where);
-    return mysql.query('SELECT * FROM ' + this.name + ' WHERE ' + w.clause,
-        w.values);
+    if (where) {
+        var w = buildWhere(where);
+        return mysql.query('SELECT * FROM ' + this.name + ' WHERE ' + w.clause,
+            w.values);
+    } else {
+        return mysql.query('SELECT * FROM ' + this.name);
+    }
 };
 
 Table.prototype.removeWhere = function(where) {

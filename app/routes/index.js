@@ -1,5 +1,9 @@
 exports.login = function(req, res) {
-    res.render('login');
+    if (req.session.user) {
+        res.redirect('/index');
+    } else {
+        res.render('login');
+    }
 };
 
 exports.index = function(req, res) {

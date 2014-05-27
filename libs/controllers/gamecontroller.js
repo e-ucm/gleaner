@@ -46,6 +46,26 @@ module.exports = (function() {
         }, handleIdNotFount);
     };
 
+    var get = function() {
+        return games.selectWhere().then(function(result) {
+            var games = result.rows;
+            return trackingkeys.selectWhere().then(function(result) {
+                result.rows.forEach(function(key) {
+                    var ownerGame = result.rows.filter(function(
+                        game) {
+                        return game[c.ID] == key;
+                    })[0];
+                    if (ownerGame) {
+                        ownerGame.trackingKeys = ownerGame.trackingKeys ||
+                            [];
+                        ownerGame.trackingKeys.push(key);
+                    }
+                });
+                return games;
+            });
+        });
+    };
+
     var removeGame = function(gameId) {
         var where = {};
         where[c.TRACKING_KEYS_GAME] = gameId;
@@ -54,7 +74,15 @@ module.exports = (function() {
         });
     };
 
+    var update = function(id, data) {
+        var where = {};
+        where[c.ID] = id;
+        return games.updateWhere(data, where);
+    };
+
     return {
+        get: get,
+        update: update,
         getGame: getGame,
         addGame: addGame,
         addTrackingKey: addTrackingKey,

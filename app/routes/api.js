@@ -2,6 +2,7 @@ var trackercontroller = require('../../libs/controllers/trackercontroller');
 var errors = require('../../libs/model/constants/errors');
 var traces = require('../../libs/model/traces');
 var users = require('../../libs/model/users');
+var games = require('../../libs/controllers/gamecontroller');
 
 
 /** API for tracker **/
@@ -101,5 +102,54 @@ exports.login = function(req, res) {
             });
     } else {
         res.send(401);
+    }
+};
+
+exports.games = function(req, res) {
+    var id = req.params.id;
+    switch (req.method) {
+        case 'GET':
+            if (id) {
+                games.getGame(id).then(function(game) {
+                    res.send(game);
+                }).fail(function() {
+                    res.send(404);
+                });
+            } else {
+                games.get().then(function(games) {
+                    res.send(games);
+                }).fail(function() {
+                    res.send(500);
+                });
+            }
+            break;
+        case 'POST':
+            games.addGame(req.body).then(function(game) {
+                res.send(game);
+            }).fail(function() {
+                res.send(500);
+            });
+            break;
+        case 'DELETE':
+            if (id) {
+                games.removeGame(id).then(function() {
+                    res.send(true);
+                }).fail(function(err) {
+                    res.send(500);
+                });
+            } else {
+                res.send(404);
+            }
+            break;
+        case 'PUT':
+            if (id) {
+                games.update(id, req.body).then(function() {
+                    res.send(true);
+                }).fail(function(err) {
+                    res.send(500);
+                });
+            } else {
+                res.send(404);
+            }
     }
 };

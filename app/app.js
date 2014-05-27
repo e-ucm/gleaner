@@ -47,7 +47,7 @@ app.get('/login', routes.login);
 app.post('/login', api.login);
 
 // Add authentication only if not testing
-if (app.get('env') !== 'test') {
+if (!configuration.test) {
     // Only tracking urls can be accessed without authentication
     app.all('*', function(req, res, next) {
         if (req.session.role) {
@@ -60,5 +60,10 @@ if (app.get('env') !== 'test') {
 
 // Traces
 app.get('/api/traces/:trackingKey', api.traces.get);
+
+// Games
+app.all('/api/games/:id', api.games);
+app.get('/api/games/', api.games);
+app.post('/api/games/', api.games);
 
 app.all('*', routes.index);
