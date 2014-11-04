@@ -90,10 +90,10 @@
           <p>The message body must contain a list of json objects. Each of this object represents a trace, and must follow the following structure:</p>
 <pre>
 {
-  type: 'logic',
-  event: 'event_type',
-  target: 'event_target',
-  value: 'event_value'
+  "type": "logic",
+  "event": "event_type",
+  "target": "event_target",
+  "value": "event_value"
 }
 </pre>
 <p>20X is returned if the list of traces is added, 400 if the format is incorrect or 401 if user hasn't got permission.</p>
@@ -102,34 +102,34 @@
 <p>A new game play is started:</p>
 <pre>
 {
-    type: 'logic',
-    event: 'start'
+    "type": 'logic',
+    "event": 'start'
 }
 </pre>
 <p>A player entered a zone, exiting the previous one:</p>
 <pre>
 {
-    type: 'logic',
-    event: 'zone',
-    value: 'zone_identifier'
+    "type": "logic",
+    "event": "zone",
+    "value": "zone_identifier"
 }
 </pre>
 <p>A meaningful variable was updated in the game:</p>
 <pre>
 {
-    type: 'logic',
-    event: 'var',
-    target: 'variable_name'
-    value: variable_value_object // Object, number or string
+    "type": "logic",
+    "event": "var",
+    "target": "variable_name"
+    "value": variable_value_object // Object, number or string
 }
 </pre>
 <p>The user makes a concious choice between several options (e.g. in a conversation node)</p>
 <pre>
 {
-    type: 'logic',
-    event: 'choice',
-    target: 'choice_id'
-    value: selected_option_object
+    "type": "logic",
+    "event": "choice",
+    "target": "choice_id"
+    "value": selected_option_object
 }
 </pre>
 <h3><a name="welcome-to-github-pages" class="anchor" href="#gleaner"><span class="octicon octicon-link"></span></a>Using the Gleaner client</h3>
